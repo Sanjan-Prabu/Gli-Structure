@@ -342,8 +342,9 @@ def step7_convert():
     print("="*60)
     
     import subprocess
+    # CHANGE THIS LINE - use 2gli_with_zinc.pdb instead of 2gli_clean.pdb
     result = subprocess.run(
-        "obabel 2gli_clean.pdb -O 2gli_receptor.pdbqt -xr -xn",
+        "obabel 2gli_with_zinc.pdb -O 2gli_receptor.pdbqt -xr -xn",
         shell=True,
         capture_output=True,
         text=True
@@ -356,6 +357,8 @@ def step7_convert():
         for line in lines:
             if line.startswith('HETATM') and ' ZN ' in line:
                 zn_count += 1
+    
+    print(f"✓ Converted with {zn_count} zinc ions\n")
     
     print(f"✓ Converted with {zn_count} zinc ions\n")
 def main():
