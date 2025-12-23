@@ -62,7 +62,7 @@ v = Vina(sf_name='vina')
 v.set_receptor('2gli_receptor.pdbqt')
 
 # ZINC-CENTERED coordinates from prepare_gli.py
-ZINC_CENTER = [-21.0, 8.0, 2.6]
+ZINC_CENTER = [-32.6, -5.7, -0.6]
 v.compute_vina_maps(center=ZINC_CENTER, box_size=[25, 25, 25])
 
 v.set_ligand_from_file('gant61.pdbqt')

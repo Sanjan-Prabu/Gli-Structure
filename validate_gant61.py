@@ -59,7 +59,7 @@ print("1 molecule converted")
 
 # Docking Setup 
 v = Vina(sf_name='vina')    
-v.set_receptor('2gli_receptor.pdbqt')
+v.set_receptor('gli_structure/2gli_receptor.pdbqt')
 
 # ZINC-CENTERED coordinates from prepare_gli.py
 ZINC_CENTER = [-32.6, -5.7, -0.6]  # Correct E119/E167 center from prepare_gli.py
@@ -88,10 +88,10 @@ else:
 print(f"Best score: {best_score:.2f} kcal/mol")
 print("Expected: -7 to -9 kcal/mol")
 
-v.write_poses('gant61_docked.pdbqt', n_poses=10, overwrite=True)
+v.write_poses('gli_structure/gant61_docked.pdbqt', n_poses=10, overwrite=True)
 
 # --- FINAL ANALYSIS AND CONFIRMATION ---
-docked_center = analyze_docked_pose('gant61_docked.pdbqt')
+docked_center = analyze_docked_pose('gli_structure/gant61_docked.pdbqt')
 
 if docked_center is not None:
     print("\n🎯 **CONFIRMED GANT61 BINDING SITE (Post-Docking)**:")
