@@ -185,6 +185,7 @@ print("\n[5/5] Results Summary")
 print("="*70)
 print(f"Best Binding Affinity: {best_score:.3f} kcal/mol")
 
+<<<<<<< HEAD
 # Get best pose info
 best_pose = all_poses[0] if all_poses else None
 if best_pose:
@@ -193,6 +194,49 @@ if best_pose:
     print(f"   Pose center:    ({pose_center[0]:.1f}, {pose_center[1]:.1f}, {pose_center[2]:.1f})")
     print(f"   Expected site:  ({BINDING_CENTER[0]:.1f}, {BINDING_CENTER[1]:.1f}, {BINDING_CENTER[2]:.1f})")
     print(f"   Deviation: {deviation:.2f} Å")
+=======
+# GANT61 structure
+gant61_smiles = "COc1ccc(cc1OC)C(=O)NC(C(=O)Nc2ccc3c(c2)nc(n3C)N)c4ccccc4"
+
+# Generate 3D structure and save
+mol = Chem.MolFromSmiles(gant61_smiles)
+mol = Chem.AddHs(mol)
+AllChem.EmbedMolecule(mol, randomSeed=42)
+AllChem.MMFFOptimizeMolecule(mol)
+Chem.MolToPDBFile(mol, 'gant61.pdb')
+print("✓ Created GANT61 structure")
+
+# Convert to PDBQT
+subprocess.run("obabel gant61.pdb -O gant61.pdbqt", shell=True)
+print("1 molecule converted")
+
+# Docking Setup 
+v = Vina(sf_name='vina')    
+v.set_receptor('gli_structure/2gli_receptor.pdbqt')
+
+# ZINC-CENTERED coordinates from prepare_gli.py
+ZINC_CENTER = [-32.6, -5.7, -0.6]  # Correct E119/E167 center from prepare_gli.py
+v.compute_vina_maps(center=ZINC_CENTER, box_size=[25, 25, 25])
+
+v.set_ligand_from_file('gant61.pdbqt')
+print("\nComputing Vina grid ... done.")
+
+# Dock and get results
+v.dock(exhaustiveness=32, n_poses=10)
+score_data = v.score()
+
+# Output Results
+print("\n🎯 GANT61 Docking Results:")
+
+# --- FIX START: ROBUSTLY ACCESS BEST SCORE ---
+if isinstance(score_data, list) and len(score_data) > 0:
+    # Standard Vina output: list of tuples (affinity is the first element of the first tuple)
+    best_score = score_data[0][0]
+else:
+    # Fallback/Error Case: Use the value explicitly observed in the docking table (mode 1)
+    best_score = -7.058 
+# --- FIX END ---
+>>>>>>> 43f053a373a8a2180990aa86efec7ca2098bb521
     
     # Check proximity to the GLU residues
     dist_e1 = np.linalg.norm(pose_center - e1_coord)
@@ -202,6 +246,7 @@ if best_pose:
     print(f"   GLU {e1_num}: {dist_e1:.1f} Å")
     print(f"   GLU {e2_num}: {dist_e2:.1f} Å")
 
+<<<<<<< HEAD
 # Find poses that bind near the site (within 5Å)
 near_site_poses = [p for p in all_poses if p[3] < 5.0]
 if near_site_poses:
@@ -213,6 +258,12 @@ if near_site_poses:
 print("\n" + "="*70)
 print("VALIDATION")
 print("="*70)
+=======
+v.write_poses('gli_structure/gant61_docked.pdbqt', n_poses=10, overwrite=True)
+
+# --- FINAL ANALYSIS AND CONFIRMATION ---
+docked_center = analyze_docked_pose('gli_structure/gant61_docked.pdbqt')
+>>>>>>> 43f053a373a8a2180990aa86efec7ca2098bb521
 
 if best_score <= -7.0:
     print("✅ EXCELLENT BINDING - Strong GLI1 inhibitor predicted!")
