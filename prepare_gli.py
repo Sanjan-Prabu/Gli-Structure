@@ -181,6 +181,9 @@ def step2_add_zinc(pdb_file):
 
 class ProteinZincSelect(Select):
     def accept_residue(self, res):
+        # REMOVE DNA, keep only protein + zinc
+        if res.resname in ['DA', 'DT', 'DC', 'DG', 'A', 'T', 'C', 'G']:
+            return False  # Remove DNA nucleotides
         return (res.id[0] == ' ' and is_aa(res.resname, standard=True)) or res.resname == 'ZN'
 
 def step3_clean(pdb_file):
@@ -332,8 +335,7 @@ def step6_binding_site():
     
     with open('vina_config.txt', 'w') as f:
         f.write(f"center_x = {center[0]:.2f}\ncenter_y = {center[1]:.2f}\ncenter_z = {center[2]:.2f}\n")
-        f.write("size_x = 25\nsize_y = 25\nsize_z = 25\n")
-    
+        f.write("size_x = 19\nsize_y = 19\nsize_z = 19\n")
     return center
 
 def step7_convert():

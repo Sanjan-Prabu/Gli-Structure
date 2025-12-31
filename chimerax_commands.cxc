@@ -1,0 +1,29 @@
+# ChimeraX Visualization Script
+# Copy and paste these commands into ChimeraX
+
+# Open files
+open /Users/sanjanprabu/Documents/GLI/2gli_receptor.pdbqt
+open /Users/sanjanprabu/Documents/GLI/gridbox.bild
+open /Users/sanjanprabu/Documents/GLI/gant61_docked.pdbqt
+
+# Style protein
+cartoon
+color bychain
+
+# Highlight E119 and E167
+select /A:119,167
+color sel red
+show sel atoms
+style sel sphere
+label sel text "{0.name}{0.number}" height 2
+
+# Style GANT61
+color ligand yellow
+style ligand stick
+
+# Measure distances
+distance /A:119@CA marker #2:1
+distance /A:167@CA marker #2:1
+
+# Center view
+view all
